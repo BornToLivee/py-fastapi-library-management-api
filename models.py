@@ -17,6 +17,8 @@ class DBAuthor(Base):
     name = Column(String(255), unique=True)
     bio = Column(String(500))
 
+    books = relationship("DBBook", back_populates="author")
+
 
 class DBBook(Base):
     __tablename__ = "book"

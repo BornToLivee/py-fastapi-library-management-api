@@ -28,20 +28,15 @@ def create_author(db: Session, author: schemas.AuthorCreate):
     db.add(db_author)
     db.commit()
     db.refresh(db_author)
+
     return db_author
 
 
 def get_books_list(
     db: Session,
-    author: str | None = None,
     skip: int = 0, limit: int = 2
 ):
-    queryset = db.query(models.DBBook)
-
-    if author is not None:
-        queryset = queryset.filter(models.DBBook.author.has(name=author))
-
-    return queryset.offset(skip).limit(limit).all()
+    return db.query(models.DBBook).offset(skip).limit(limit).all()
 
 
 def create_book(db: Session, book: schemas.BookCreate):
@@ -54,10 +49,21 @@ def create_book(db: Session, book: schemas.BookCreate):
     db.add(db_book)
     db.commit()
     db.refresh(db_book)
+
     return db_book
 
 
-def get_books_by_author_id(db: Session, author_id: int):
-    return db.query(models.DBBook).filter(
-        models.DBBook.author_id == author_id
-    ).all()
+def get_books_by_author_id(
+        db: Session,
+        author_id: int,
+        skip: int = 0,
+        limit: int = 2
+):
+    query_set = db.query(models.DBBook)
+
+    if author_id is not None:
+        query_set = query_set.filter(
+            models.DBBook.author_id == author_id
+        )
+
+    return query_set.offset(skip).limit(limit).all()
